@@ -202,7 +202,7 @@ export async function generateAIAnswer(
     Return only the answer text, no additional formatting.`;
 
     const completion = await openai.chat.completions.create({
-      model: 'deepseek/deepseek-chat-v3-0324:free',
+      model: 'deepseek/deepseek-chat-v3.1:free',
       messages: [
         {
           role: 'system',
@@ -215,7 +215,7 @@ export async function generateAIAnswer(
         },
       ],
       temperature: 0.7,
-      max_tokens: 200,
+      max_tokens: 10000,
     });
 
     const response = completion.choices[0].message.content;
