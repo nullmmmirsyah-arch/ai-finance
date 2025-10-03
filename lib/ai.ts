@@ -81,7 +81,7 @@ export async function generateExpenseInsights(
         },
       ],
       temperature: 0.7,
-      max_tokens: 100000000,
+      max_tokens: 1000,
     });
 
     const response = completion.choices[0].message.content;
@@ -215,7 +215,7 @@ export async function generateAIAnswer(
         },
       ],
       temperature: 0.7,
-      max_tokens: 10000,
+      max_tokens: 1000,
     });
 
     const response = completion.choices[0].message.content;
