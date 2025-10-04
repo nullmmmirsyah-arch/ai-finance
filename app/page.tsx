@@ -1,10 +1,11 @@
 import AddNewRecord from '@/components/AddNewRecord';
 import AIInsights from '@/components/AIInsights';
-import ExpenseStats from '@/components/ExpenseStats';
+import FinancialStats from '@/components/FinancialStats';
 import Guest from '@/components/Guest';
 import RecordChart from '@/components/RecordChart';
 import RecordHistory from '@/components/RecordHistory';
 import { currentUser } from '@clerk/nextjs/server';
+import Image from 'next/image';
 
 export default async function HomePage() {
   const user = await currentUser();
@@ -23,9 +24,11 @@ export default async function HomePage() {
             <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 lg:p-8 rounded-2xl shadow-xl border border-gray-100/50 dark:border-gray-700/50 hover:shadow-2xl flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6'>
               {/* User Image - responsive sizing */}
               <div className='relative flex-shrink-0'>
-                <img
+                <Image
                   src={user.imageUrl}
                   alt={`${user.firstName}&#39;s profile`}
+                  width={80}
+                  height={80}
                   className='w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-white dark:border-gray-600 shadow-lg'
                 />
                 <div className='absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-green-400 to-green-500 rounded-full border-2 border-white dark:border-gray-800 flex items-center justify-center'>
@@ -44,7 +47,7 @@ export default async function HomePage() {
                   </h2>
                 </div>
                 <p className='text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 max-w-md mx-auto sm:mx-0'>
-                  Here&#39;s a quick overview of your recent expense activity.
+                  Here&#39;s a quick overview of your recent financial activity.
                   Track your spending, analyze patterns, and manage your budget
                   efficiently!
                 </p>
@@ -81,15 +84,15 @@ export default async function HomePage() {
                 </div>
               </div>
             </div>
-            {/* Add New Expense */}
+            {/* Add New Record */}
             <AddNewRecord />
           </div>
 
           {/* Right Column - Stacked below on mobile */}
           <div className='space-y-4 sm:space-y-6'>
-            {/* Expense Analytics */}
+            {/* Financial Analytics */}
             <RecordChart />
-            <ExpenseStats />
+            <FinancialStats />
           </div>
         </div>
 

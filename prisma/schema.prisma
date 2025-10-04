@@ -24,11 +24,17 @@ model User{
   Records Record[]
 }
 
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
 model Record{
   id  String  @id @default(uuid())
   text  String
   amount  Float
   category  String @default("Other")
+  type      TransactionType   @default(EXPENSE)
   date  DateTime @default(now())
   userId  String
   user  User  @relation(fields: [userId], references: [clerkUserId], onDelete: Cascade)

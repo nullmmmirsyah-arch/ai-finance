@@ -17,7 +17,7 @@ const openai = new OpenAI({
   },
 });
 
-export interface ExpenseRecord {
+export interface FinancialRecord {
   id: string;
   amount: number;
   category: string;
@@ -34,19 +34,26 @@ export interface AIInsight {
   confidence: number;
 }
 
-export async function generateExpenseInsights(
-  expenses: ExpenseRecord[]
+export async function generateFinancialInsights(
+  income: FinancialRecord[],
+  expenses: FinancialRecord[]
 ): Promise<AIInsight[]> {
   try {
-    // Prepare expense data for AI analysis
-    const expensesSummary = expenses.map((expense) => ({
-      amount: expense.amount,
-      category: expense.category,
-      description: expense.description,
-      date: expense.date,
+    const incomeSummary = income.map((inc) => ({
+      amount: inc.amount,
+      category: inc.category,
+      description: inc.description,
+      date: inc.date,
     }));
 
-    const prompt = `Analyze the following expense data and provide 3-4 actionable financial insights. 
+    const expensesSummary = expenses.map((exp) => ({
+      amount: exp.amount,
+      category: exp.category,
+      description: exp.description,
+      date: exp.date,
+    }));
+
+    const prompt = `Analyze the following financial data and provide 3-4 actionable insights. 
     Return a JSON array of insights with this structure:
     {
       "type": "warning|info|success|tip",
@@ -56,14 +63,18 @@ export async function generateExpenseInsights(
       "confidence": 0.8
     }
 
+    Income Data:
+    ${JSON.stringify(incomeSummary, null, 2)}
+
     Expense Data:
     ${JSON.stringify(expensesSummary, null, 2)}
 
     Focus on:
-    1. Spending patterns (day of week, categories)
-    2. Budget alerts (high spending areas)
-    3. Money-saving opportunities
-    4. Positive reinforcement for good habits
+    1. Income vs. Expense comparison
+    2. Spending patterns (day of week, categories)
+    3. Budget alerts (high spending areas)
+    4. Savings opportunities
+    5. Positive reinforcement for good habits
 
     Return only valid JSON array, no additional text.`;
 
@@ -73,7 +84,7 @@ export async function generateExpenseInsights(
         {
           role: 'system',
           content:
-            'You are a financial advisor AI that analyzes spending patterns and provides actionable insights. Always respond with valid JSON only.',
+            'You are a financial advisor AI that analyzes financial data and provides actionable insights. Always respond with valid JSON only.',
         },
         {
           role: 'user',
@@ -89,7 +100,6 @@ export async function generateExpenseInsights(
       throw new Error('No response from AI');
     }
 
-    // Clean the response by removing markdown code blocks if present
     let cleanedResponse = response.trim();
     if (cleanedResponse.startsWith('```json')) {
       cleanedResponse = cleanedResponse
@@ -101,10 +111,8 @@ export async function generateExpenseInsights(
         .replace(/\s*```$/, '');
     }
 
-    // Parse AI response
     const insights = JSON.parse(cleanedResponse);
 
-    // Add IDs and ensure proper format
     const formattedInsights = insights.map(
       (insight: RawInsight, index: number) => ({
         id: `ai-${Date.now()}-${index}`,
@@ -120,7 +128,6 @@ export async function generateExpenseInsights(
   } catch (error) {
     console.error('❌ Error generating AI insights:', error);
 
-    // Fallback to mock insights if AI fails
     return [
       {
         id: 'fallback-1',
@@ -133,6 +140,15 @@ export async function generateExpenseInsights(
       },
     ];
   }
+}
+
+export async function categorizeIncome(description: string): Promise<string> {
+  // For now, we'll use a simple hardcoded logic.
+  const lowerCaseDescription = description.toLowerCase();
+  if (lowerCaseDescription.includes('gaji') || lowerCaseDescription.includes('salary')) {
+    return 'Gaji';
+  }
+  return 'Other';
 }
 
 export async function categorizeExpense(description: string): Promise<string> {
@@ -178,24 +194,24 @@ export async function categorizeExpense(description: string): Promise<string> {
 
 export async function generateAIAnswer(
   question: string,
-  context: ExpenseRecord[]
+  context: FinancialRecord[]
 ): Promise<string> {
   try {
-    const expensesSummary = context.map((expense) => ({
-      amount: expense.amount,
-      category: expense.category,
-      description: expense.description,
-      date: expense.date,
+    const contextSummary = context.map((record) => ({
+      amount: record.amount,
+      category: record.category,
+      description: record.description,
+      date: record.date,
     }));
 
-    const prompt = `Based on the following expense data, provide a detailed and actionable answer to this question: "${question}"
+    const prompt = `Based on the following financial data, provide a detailed and actionable answer to this question: "${question}"
 
-    Expense Data:
-    ${JSON.stringify(expensesSummary, null, 2)}
+    Financial Data:
+    ${JSON.stringify(contextSummary, null, 2)}
 
     Provide a comprehensive answer that:
     1. Addresses the specific question directly
-    2. Uses concrete data from the expenses when possible
+    2. Uses concrete data from the records when possible
     3. Offers actionable advice
     4. Keeps the response concise but informative (2-3 sentences)
     
@@ -207,7 +223,7 @@ export async function generateAIAnswer(
         {
           role: 'system',
           content:
-            'You are a helpful financial advisor AI that provides specific, actionable answers based on expense data. Be concise but thorough.',
+            'You are a helpful financial advisor AI that provides specific, actionable answers based on financial data. Be concise but thorough.',
         },
         {
           role: 'user',
