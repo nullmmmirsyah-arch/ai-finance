@@ -52,7 +52,7 @@ const FinancialStats = async () => {
                 </span>
               </div>
               <div className='flex-1'>
-                <h4 className='text-lg font-semibold text-red-600 dark:text-red-300'>Total Expense</h4>
+                <h4 className='text-lg font-medium text-red-600 dark:text-red-300'>Total Expense</h4>
                 <p className='text-lg font-bold text-red-600 dark:text-red-300'>Rp. {totalExpense?.toLocaleString('id-ID')}</p>
               </div>
             </div>
@@ -67,7 +67,7 @@ const FinancialStats = async () => {
                 </span>
               </div>
               <div className='flex-1'>
-                <h4 className='text-lg font-semibold text-green-600 dark:text-green-300'>Total Income</h4>
+                <h4 className='text-lg font-medium text-green-600 dark:text-green-300'>Total Income</h4>
                 <p className='text-lg font-bold text-green-600 dark:text-green-300'>Rp. {totalIncome?.toLocaleString('id-ID')}</p>
               </div>
             </div>
