@@ -59,7 +59,7 @@ const RecordItem = ({ record }: { record: Record }) => {
       </div>
       <div className='text-right'>
         <p className={`font-bold ${amountColor}`}>
-          {isIncome ? '+' : '-'} Rp. {record.amount.toFixed(2)}
+          {isIncome ? '+' : '-'} Rp. {record.amount.toLocaleString('id-ID')}
         </p>
         <p className='text-sm text-gray-500'>
           {new Date(record.date).toLocaleDateString()}
