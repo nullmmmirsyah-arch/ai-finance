@@ -185,55 +185,94 @@ const AddNewRecord = () => {
                 />
               </div>
             </div>
-
-            <div>
-              <label htmlFor='category' className='block text-sm font-medium'>
-                Category
-              </label>
-              <select
-                id='category'
-                name='category'
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className='w-full p-2 border rounded'
-                required
-              >
-                <option value='' disabled>Select category...</option>
-                {(transactionType === TransactionType.INCOME
-                  ? incomeCategories
-                  : expenseCategories
-                ).map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+              
+            {/* Category Selection and Amount */}
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-xl border border-green-100/50 dark:border-green-800/50'>
+              {/* Category Selection */}
+              <div className='space-y-1.5'>
+                <label 
+                htmlFor='category' 
+                className='flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wide'
+              > 
+                  <span className='w-1.5 h-1.5 bg-green-500 rounded-full'></span>
+                  Category
+                  <span className='text-xs text-gray-400 dark:text-gray-500 ml-2 font-normal hidden sm:inline'>
+                  Use the ✨ button above for AI suggestions
+                  </span>
+                </label>
+                <select
+                  id='category'
+                  name='category'
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className='w-full px-3 py-2.5 bg-white/70 dark:bg-gray-800/70 border-2 border-gray-200/80 dark:border-gray-600/80 rounded-xl focus:ring-2 focus:ring-emerald-500/30 focus:bg-white dark:focus:bg-gray-700/90 focus:border-emerald-400 dark:focus:border-emerald-400 text-gray-900 dark:text-gray-100 cursor-pointer text-sm shadow-sm hover:shadow-md transition-all duration-200'
+                  required
+                >
+                  <option 
+                  value='' 
+                  disabled
+                  className='text-gray-400 dark:text-gray-500'
+                  >
+                    Select category...
                   </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor='amount' className='block text-sm font-medium'>
+                  {(transactionType === TransactionType.INCOME
+                    ? incomeCategories
+                    : expenseCategories
+                  ).map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            
+            
+            {/* Amount */}
+            <div className='space-y-1.5'>
+              <label 
+                htmlFor='amount' 
+                className='flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wide'
+              >
+                <span className='w-1.5 h-1.5 bg-green-500 rounded-full'></span>
                 Amount
+                <span className='text-xs text-gray-400 dark:text-gray-500 ml-2 font-normal hidden sm:inline'>
+                  Enter amount of transaction
+                </span>
               </label>
-              <input
-                type='number'
-                name='amount'
-                id='amount'
-                min='0'
-                step='1'
-                value={amount}
-                onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-                className='w-full p-2 border rounded'
-                placeholder='0.00'
-                required
-              />
+              <div className='relative'>
+                <span className='absolute left-1 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium text-sm'>
+                  Rp
+                </span>
+                <input
+                  type='number'
+                  name='amount'
+                  id='amount'
+                  min='0'
+                  step='1'
+                  value={amount}
+                  onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+                  className='w-full pl-6 pr-3 py-2.5 bg-white/70 dark:bg-gray-800/70 border-2 border-gray-200/80 dark:border-gray-600/80 rounded-xl focus:ring-2 focus:ring-emerald-500/30 focus:bg-white dark:focus:bg-gray-700/90 focus:border-emerald-400 dark:focus:border-emerald-400 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 text-sm font-semibold shadow-sm hover:shadow-md transition-all duration-200'
+                  placeholder='0'
+                  required
+                />
+              </div>
             </div>
+          </div>
+            
+          {/* Submit Button */}
+          <button 
+            type='submit' 
+            className='w-full relative overflow-hidden bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 hover:from-emerald-700 hover:via-green-600 hover:to-teal-600 text-white px-4 py-3 sm:px-5 sm:py-4 rounded-xl font-semibold shadow-xl hover:shadow-2xl group transition-all duration-300 border-2 border-transparent hover:border-white/20 text-sm sm:text-base' 
+            disabled={isLoading}
+          >
+            <div className='relative flex items-center justify-center gap-2'>
+            {isLoading ? 'Processing...' : `Add ${transactionType === TransactionType.INCOME ? 'Income' : 'Expense'}`}
+            </div>
+          </button>
+        </form>
 
-            <button type='submit' className='w-full p-2 bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 text-white border rounded' disabled={isLoading}>
-              {isLoading ? 'Processing...' : `Add ${transactionType === TransactionType.INCOME ? 'Income' : 'Expense'}`}
-            </button>
-          </form>
-
-          {alertMessage && (
+        {/* Alert Message */}          
+        {alertMessage && (
             <div 
               className={`mt-4 p-3 rounded-xl border-l-4 backdrop-blur-sm ${
                 alertType === 'success'
