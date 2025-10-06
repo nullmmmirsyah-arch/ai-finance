@@ -13,15 +13,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id  String  @id @default(uuid())
-  clerkUserId String  @unique
-  email String  @unique
-  name  String?
-  imageUrl  String?
-  createdAt DateTime  @default(now())
-  updateAt  DateTime  @updatedAt
-  Records Record[]
+model User {
+  id          String    @id @default(uuid())
+  clerkUserId String    @unique
+  email       String    @unique
+  name        String?
+  imageUrl    String?
+  createdAt   DateTime  @default(now())
+  updateAt    DateTime  @updatedAt
+  Records     Record[]
+  Account     Account[]
 }
 
 enum TransactionType {
@@ -29,15 +30,39 @@ enum TransactionType {
   EXPENSE
 }
 
-model Record{
-  id  String  @id @default(uuid())
-  text  String
-  amount  Float
-  category  String @default("Other")
-  type      TransactionType   @default(EXPENSE)
-  date  DateTime @default(now())
-  userId  String
-  user  User  @relation(fields: [userId], references: [clerkUserId], onDelete: Cascade)
-  createdAt DateTime @default(now())
+enum AccountType {
+  REKENING
+  DOMPET
+  KREDIT
+}
+
+model Account {
+  id        String      @id @default(uuid())
+  name      String
+  type      AccountType
+  balance   Float
+  userId    String
+  user      User        @relation(fields: [userId], references: [clerkUserId], onDelete: Cascade)
+  records   Record[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([userId])
+}
+
+model Record {
+  id        String          @id @default(uuid())
+  text      String
+  amount    Float
+  category  String          @default("Other")
+  type      TransactionType @default(EXPENSE)
+  date      DateTime        @default(now())
+  userId    String
+  user      User            @relation(fields: [userId], references: [clerkUserId], onDelete: Cascade)
+  createdAt DateTime        @default(now())
+
+  accountId String?
+  account   Account?        @relation(fields: [accountId], references: [id], onDelete:SetNull)
+
   @@index([userId])
 }

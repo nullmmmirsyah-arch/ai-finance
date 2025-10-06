@@ -1,8 +1,10 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import addRecord from '@/app/actions/addRecord';
 import { suggestCategory } from '@/app/actions/suggestCategory';
+import { getAccounts } from '@/app/actions/accounts';
 import { TransactionType } from '@/types/Record';
+import { Account } from '@prisma/client';
 
 const AddNewRecord = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -16,6 +18,24 @@ const AddNewRecord = () => {
   const [transactionType, setTransactionType] = useState<TransactionType>(
     TransactionType.EXPENSE
   );
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [selectedAccount, setSelectedAccount] = useState('');
+
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      const { accounts, error } = await getAccounts();
+      if (error) {
+        console.error(error);
+      } else if (accounts) {
+        setAccounts(accounts);
+        if (accounts.length > 0) {
+          setSelectedAccount(accounts[0].id);
+        }
+      }
+    };
+
+    fetchAccounts();
+  }, []);
 
   const clientAction = async (formData: FormData) => {
     setIsLoading(true);
@@ -24,6 +44,7 @@ const AddNewRecord = () => {
     formData.set('amount', amount.toString());
     formData.set('category', category);
     formData.set('type', transactionType);
+    formData.set('accountId', selectedAccount);
 
     const { error } = await addRecord(formData);
 
@@ -123,6 +144,32 @@ const AddNewRecord = () => {
             }}
             className='space-y-4'
           >
+            {/* Account Selection */}
+            <div className='space-y-1.5'>
+              <label 
+                htmlFor='account' 
+                className='flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-300 tracking-wide'
+              >
+                <span className='w-1.5 h-1.5 bg-blue-500 rounded-full'></span>
+                Account
+              </label>
+              <select
+                id='account'
+                name='accountId'
+                value={selectedAccount}
+                onChange={(e) => setSelectedAccount(e.target.value)}
+                className='w-full px-3 py-2.5 bg-white/70 dark:bg-gray-800/70 border-2 border-gray-200/80 dark:border-gray-600/80 rounded-xl focus:ring-2 focus:ring-emerald-500/30 focus:bg-white dark:focus:bg-gray-700/90 focus:border-emerald-400 dark:focus:border-emerald-400 text-gray-900 dark:text-gray-100 cursor-pointer text-sm shadow-sm hover:shadow-md transition-all duration-200'
+                required
+              >
+                <option value='' disabled>Select account...</option>
+                {accounts.map((acc) => (
+                  <option key={acc.id} value={acc.id}>
+                    {acc.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* Expense Description and Date */}
             <div className='grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-emerald-50/50 to-green-50/50 dark:from-emerald-900/10 dark:to-green-900/10 rounded-xl border border-emerald-100/50 dark:border-emerald-800/50'>
               {/* Expense Description */}

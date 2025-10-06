@@ -7,7 +7,6 @@ import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
 } from '@/components/ui/chart';
 import type { Record } from '@/types/Record';
 
@@ -40,7 +39,7 @@ const ChartBarWithDetails = ({ records }: { records?: Record[] }) => {
   };
 
   // Helper: determine if a record is income
-  const isIncomeType = (t: any) => {
+  const isIncomeType = (t: unknown) => {
     // Accept 'income' / 'INCOME' or anything that contains 'income'
     if (t === undefined || t === null) return false;
     return String(t).toLowerCase().includes('income');
@@ -65,12 +64,12 @@ const ChartBarWithDetails = ({ records }: { records?: Record[] }) => {
       const existing = dateMap.get(dateKey);
 
       const detail = {
-        text: (record as any).text ?? '',
-        amount: (record as any).amount ?? 0,
-        category: (record as any).category ?? '',
+        text: record.text ?? '',
+        amount: record.amount ?? 0,
+        category: record.category ?? '',
       };
 
-      const incomeFlag = isIncomeType((record as any).type);
+      const incomeFlag = isIncomeType(record.type);
 
       if (existing) {
         if (incomeFlag) {
@@ -118,6 +117,14 @@ const ChartBarWithDetails = ({ records }: { records?: Record[] }) => {
   });
 
   const chartConfig = { amount: { label: 'Amount' } } satisfies ChartConfig;
+
+  if (chartData.length === 0) {
+    return (
+      <div className="relative w-full h-64 sm:h-72 md:h-80 flex items-center justify-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-xl border border-gray-100/50 dark:border-gray-700/50">
+        <p className="text-gray-500 dark:text-gray-400">No data available for the selected period.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-64 sm:h-72 md:h-80">

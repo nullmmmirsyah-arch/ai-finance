@@ -68,3 +68,7 @@ The application will be available at `http://localhost:3000`.
 *   **Authentication:** User authentication is handled by Clerk.
 *   **Linting:** The project uses ESLint to enforce code quality.
 *   **Types:** TypeScript is used for static typing. Type definitions are located in the `types` directory.
+
+## Don't
+
+*   Don't change styling, like color and className. If there are some new page, component, etc follow the color and styling from existing file. If really needed to change the style make sure to inform user and make the user change it manually.

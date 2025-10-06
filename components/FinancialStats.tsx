@@ -1,8 +1,12 @@
 import React from 'react';
 import { getFinancialSummary } from '@/app/actions/getFinancialSummary';
+import { getAccounts } from '@/app/actions/accounts';
 
 const FinancialStats = async () => {
-  const { totalIncome, totalExpense, netFlow, error } = await getFinancialSummary();
+  const { totalIncome, totalExpense, netFlow, error: financialSummaryError } = await getFinancialSummary();
+  const { accounts, error: accountsError } = await getAccounts();
+
+  const error = financialSummaryError || accountsError;
 
   if (error) {
     return (
@@ -12,6 +16,8 @@ const FinancialStats = async () => {
       </div>
     );
   }
+
+  const totalBalance = accounts?.reduce((acc, account) => acc + account.balance, 0);
 
   return (
       <div className='bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 sm:p-6 rounded-2xl shadow-xl border border-gray-100/50 dark:border-gray-700/50 hover:shadow-2xl'>
@@ -30,6 +36,18 @@ const FinancialStats = async () => {
         </div>
 
         <div className='space-y-3 sm:space-y-4'>
+          {/* Total Balance */}
+          <div className='bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-700 dark:to-purple-600 rounded-xl p-3 sm:p-4 border border-purple-200/50 dark:border-purple-600/50'>
+            <div className='text-center'>
+              <p className='text-xs font-medium text-purple-600 dark:text-purple-100 mb-2 tracking-wide uppercase'>
+                Total Balance
+              </p>
+              <div className='text-2xl sm:text-3xl font-bold text-purple-900 dark:text-purple-100 mb-2'>
+                Rp. {totalBalance?.toLocaleString('id-ID')}
+              </div>
+            </div>
+          </div>
+
           {/* Net Flow */}
           <div className='bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-700 dark:to-blue-600 rounded-xl p-3 sm:p-4 border border-blue-200/50 dark:border-blue-600/50'>
             <div className='text-center'>
