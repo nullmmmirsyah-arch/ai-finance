@@ -80,7 +80,7 @@ const AccountForm = ({ account, onFinished }: AccountFormProps) => {
           required
         />
       </div>
-      <Button type="submit" className="bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 text-white hover:from-emerald-700 hover:via-green-600 hover:to-teal-600">{account ? 'Update Account' : 'Add Account'}</Button>
+      <Button type="submit" className="bg-gradient-to-r from-[var(--gradient-start)] via-[var(--gradient-mid)] to-[var(--gradient-end)] text-white hover:from-[var(--gradient-start)] hover:via-[var(--gradient-mid)] hover:to-[var(--gradient-end)]">{account ? 'Update Account' : 'Add Account'}</Button>
     </form>
   );
 };

@@ -61,7 +61,7 @@ const AccountsPage = () => {
             <Dialog open={isAccountModalOpen} onOpenChange={setIsAccountModalOpen}>
               <DialogTrigger asChild>
                 <Button
-                  className="bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 text-white hover:from-emerald-700 hover:via-green-600 hover:to-teal-600"
+                  className="bg-gradient-to-r from-[var(--gradient-start)] via-[var(--gradient-mid)] to-[var(--gradient-end)] text-white hover:from-[var(--gradient-start)] hover:via-[var(--gradient-mid)] hover:to-[var(--gradient-end)]"
                 >
                   Add Account
                 </Button>
@@ -83,7 +83,7 @@ const AccountsPage = () => {
             <Dialog open={isTransferModalOpen} onOpenChange={setIsTransferModalOpen}>
               <DialogTrigger asChild>
                 <Button
-                  className="bg-gradient-to-r from-emerald-600 via-green-500 to-teal-500 text-white hover:from-emerald-700 hover:via-green-600 hover:to-teal-600"
+                  className="bg-gradient-to-r from-[var(--gradient-start)] via-[var(--gradient-mid)] to-[var(--gradient-end)] text-white hover:from-[var(--gradient-start)] hover:via-[var(--gradient-mid)] hover:to-[var(--gradient-end)]"
                 >
                   Transfer
                 </Button>
